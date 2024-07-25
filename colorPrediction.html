@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Prediction Game</title>
+    <style>
+        .number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            margin: 5px;
+            font-size: 18px;
+            color: white;
+            font-weight: bold;
+        }
+        .red {
+            background-color: red;
+        }
+        .green {
+            background-color: green;
+        }
+        .violet {
+            background-color: violet;
+        }
+        .red-violet {
+            background: linear-gradient(45deg, red, violet);
+        }
+        .green-violet {
+            background: linear-gradient(45deg, green, violet);
+        }
+    </style>
+</head>
+<body>
+    <div id="game"></div>
+
+    <button id="betButton">Place Bet</button>
+
+    <script>
+        function getColor(number) {
+            if (number === 0) {
+                return 'red-violet';
+            } else if (number === 5) {
+                return 'green-violet';
+            } else if (number % 2 === 0) {
+                return 'red';
+            } else {
+                return 'green';
+            }
+        }
+
+        function createNumberElement(number, color) {
+            const element = document.createElement('div');
+            element.classList.add('number', color);
+            element.textContent = number;
+            return element;
+        }
+
+        function initializeGame() {
+            const gameContainer = document.getElementById('game');
+            gameContainer.innerHTML = '';
+
+            for (let i = 0; i < 10; i++) {
+                const color = getColor(i);
+                const numberElement = createNumberElement(i, color);
+                gameContainer.appendChild(numberElement);
+            }
+        }
+
+        function placeBet(userBet) {
+            const randomColor = Math.random() < 0.5 ? 'red' : 'green';
+            const gameContainer = document.getElementById('game');
+            const numberElements = gameContainer.getElementsByClassName('number');
+
+            for (let i = 0; i < numberElements.length; i++) {
+                const element = numberElements[i];
+                if (parseInt(element.textContent) === userBet) {
+                    element.classList.remove('red', 'green', 'violet', 'red-violet', 'green-violet');
+                    element.classList.add(randomColor);
+                    break;
+                }
+            }
+
+            alert(`The number ${userBet} is now ${randomColor}.`);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeGame();
+
+            const betButton = document.getElementById('betButton');
+            betButton.addEventListener('click', () => {
+                let userBet = parseInt(prompt("Enter your bet number (0-9):"));
+
+                if (isNaN(userBet) || userBet < 0 || userBet > 9) {
+                    alert("Invalid bet! Please enter a number between 0 and 9.");
+                    return;
+                }
+
+                placeBet(userBet);
+            });
+        });
+    </script>
+</body>
+</html>
